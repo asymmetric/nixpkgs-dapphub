@@ -36,11 +36,11 @@ headsha256=$(
 
 tree=$(GET https://api.github.com/repos/"$pkg"/git/trees/"$taghash")
 nix=$(jq -r <<<"$tree" '.tree | .[] | select(.path == "default.nix") | .url')
-GET "$nix" | jshon -e content -u | base64 -d > overlay/upstream/stable/$name.nix
+GET "$nix" | jshon -e content -u | base64 -d > overlay/upstream/stable/"$name".nix
 
 tree=$(GET https://api.github.com/repos/"$pkg"/git/trees/"$headhash")
 nix=$(jq -r <<<"$tree" '.tree | .[] | select(.path == "default.nix") | .url')
-GET "$nix" | jshon -e content -u | base64 -d > overlay/upstream/master/$name.nix
+GET "$nix" | jshon -e content -u | base64 -d > overlay/upstream/master/"$name".nix
 
 (
   flock 9 || exit 1
