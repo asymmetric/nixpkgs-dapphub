@@ -10,19 +10,25 @@ GET() {
 echo "bumping"
 pkg="$1"
 name=$(basename "$pkg")
+
+# fetch tag hash
 tag=$(GET https://api.github.com/repos/"$pkg"/tags?per_page=1 | jshon -e 0)
 version=$(jshon -e name -u <<<"$tag")
 taghash=$(jshon -e commit -e sha -u <<<"$tag")
+
+# fetch commit hash
 head=$(GET https://api.github.com/repos/"$pkg"/commits?per_page=1 | jshon -e 0)
 headhash=$(jshon -e sha -u <<<"$head")
 
 echo "stable $version, master $headhash"
 
+# fetch latest tag tarball
 tagsha256=$(
   nix-prefetch-url \
     --unpack \
     https://github.com/"$pkg"/archive/"$version".tar.gz 2>/dev/null)
 
+# fetch latest commit tarball
 headsha256=$(
   nix-prefetch-url \
     --unpack \
