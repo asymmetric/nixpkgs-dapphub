@@ -5,7 +5,7 @@ jobs:
       - image: nixos/nix:2.0
     steps:
       - run: nix-channel --update
-      - run: nix-env -iA git -f '<nixpkgs>'
+      - run: nix-env -iA bash git -f '<nixpkgs>'
       - checkout
       - run: git submodule sync
       - run: git submodule update --init
