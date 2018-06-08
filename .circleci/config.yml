@@ -10,3 +10,4 @@ jobs:
       - run: git submodule sync
       - run: git submodule update --init
       - run: ./bump
+      - run: nix-build release.nix -A dapphub.linux.stable
