@@ -2,9 +2,14 @@ os:
   - linux
   - osx
 language: nix
+sudo: required
 install:
   - nix-channel --update
-  - ./scripts/install-dapphub-cache.sh
+  - sudo mkdir -p /etc/nix
+  - echo "trusted-users = root $USER" | sudo tee -a /etc/nix/nix.conf
+  - echo "substituters = https://cache.nixos.org https://d121dybo9yhl5h.cloudfront.net" | sudo tee -a /etc/nix.nix.conf
+  - echo "trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= d121dybo9yhl5h.cloudfront.net-1:IOpHdUBT2b3fIRb/TBm+V8Y8eEj52fStcllzD6TFYyU=" | sudo tee -a /etc/nix/nix.conf
+  - sudo launchctl kickstart -k system/org.nixos.nix-daemon || true
   - nix-env -if https://github.com/cachix/cachix/tarball/master --substituters https://cachix.cachix.org --trusted-public-keys cachix.cachix.org-1:eWNHQldwUO7G2VkjpnjDbWwy4KQ/HNxht7H4SSoMckM=
   - cachix authtoken ${CACHIX_AUTHTOKEN}
   - cachix use dapp
